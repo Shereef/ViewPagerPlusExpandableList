@@ -1,12 +1,18 @@
 package net.shereef.vewpagerplusexpandablelistexample;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 public class ViewPagerPlusExpandableListActivity extends Activity {
@@ -65,20 +71,101 @@ public class ViewPagerPlusExpandableListActivity extends Activity {
 		 */
 		@Override
 		public Object instantiateItem(View collection, int position) {
-			TextView tv = new TextView(
-					ViewPagerPlusExpandableListActivity.this);
+			final LayoutInflater inflater = (LayoutInflater) ViewPagerPlusExpandableListActivity.this
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			TextView tv = new TextView(ViewPagerPlusExpandableListActivity.this);
 			switch (position) {
-			case 2:
-				// insert ExpandableList Code here
-				break;
+			case 2: // Full ExpandableList code here
+				View v = inflater.inflate(R.layout.expander, null, false);
+				ExpandableListView elv1 = (ExpandableListView) v
+						.findViewById(R.id.elv1);
+				if (true) { // if the size of the data source is greater than 0
+							// do the following
+					ViewPagerPlusExpandableListActivity.this.mAdapter = new BaseExpandableListAdapter() {
+
+						@Override
+						public Object getChild(int groupPosition,
+								int childPosition) {
+							return null;
+						}
+
+						@Override
+						public long getChildId(int groupPosition,
+								int childPosition) {
+							return 0;
+						}
+
+						@Override
+						public int getChildrenCount(int groupPosition) {
+							return 3; // Size of children usually taken from
+										// .length or .size()
+						}
+
+						@Override
+						public View getChildView(int groupPosition,
+								int childPosition, boolean isLastChild,
+								View convertView, ViewGroup parent) {
+							View v = inflater.inflate(R.layout.twolinelistitem,
+									null, false);
+							TextView tv = (TextView) v
+									.findViewById(R.id.simple_expandable_list_item_2_text1);
+							tv.setText("Child " + (childPosition + 1)
+									+ " of group " + (groupPosition + 1));
+							return v;
+						}
+
+						@Override
+						public Object getGroup(int groupPosition) {
+							return null;
+						}
+
+						@Override
+						public int getGroupCount() {
+							return 12; // Groups count usually taken from
+										// .length or .size()
+						}
+
+						@Override
+						public long getGroupId(int groupPosition) {
+							return 0;
+						}
+
+						@Override
+						public View getGroupView(int groupPosition,
+								boolean isExpanded, View convertView,
+								ViewGroup parent) {
+							View v = inflater.inflate(R.layout.twolinelistitem,
+									parent, false);
+							TextView tv = (TextView) v
+									.findViewById(R.id.simple_expandable_list_item_2_text1);
+							tv.setText("Group " + (groupPosition + 1));
+							return v;
+						}
+
+						@Override
+						public boolean hasStableIds() {
+							return false;
+						}
+
+						@Override
+						public boolean isChildSelectable(int groupPosition,
+								int childPosition) {
+							return true;
+						}
+					};
+					elv1.setAdapter(ViewPagerPlusExpandableListActivity.this.mAdapter);
+
+					((ViewPager) collection).addView(v, 0);
+					return v;
+				}
 			default:
-				tv.setText("Hello page " + (position + 1) + " of " + this.getCount());
+				tv.setText("Hello page " + (position + 1) + " of "
+						+ this.getCount());
 				tv.setTextColor(Color.WHITE);
 				tv.setTextSize(30);
 				((ViewPager) collection).addView(tv, 0);
+				return tv;
 			}
-
-			return tv;
 		}
 
 		@Override
@@ -100,6 +187,8 @@ public class ViewPagerPlusExpandableListActivity extends Activity {
 		}
 
 	}
+
+	public ExpandableListAdapter mAdapter;
 
 	private MyViewPagerAdapter myAdapter;
 	private ViewPager myPager;
