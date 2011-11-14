@@ -28,7 +28,7 @@ public class ViewPagerPlusExpandableListActivity extends Activity {
 		 */
 		@Override
 		public void destroyItem(View collection, int position, Object view) {
-			((ViewPager) collection).removeView((TextView) view);
+			((ViewPager) collection).removeView((View) view);
 		}
 
 		/**
@@ -83,7 +83,7 @@ public class ViewPagerPlusExpandableListActivity extends Activity {
 
 		@Override
 		public boolean isViewFromObject(View view, Object object) {
-			return view == (TextView) object;
+			return view == object;
 		}
 
 		@Override
